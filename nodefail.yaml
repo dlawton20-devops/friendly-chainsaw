@@ -32,4 +32,4 @@ spec:
               exit 0
           securityContext:
             privileged: true
-      restartPolicy: OnFailure
+      restartPolicy: Never
