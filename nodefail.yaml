@@ -3,6 +3,11 @@ kind: DaemonSet
 metadata:
   name: kubelet-failure
   namespace: kube-system
+  labels:
+    app.kubernetes.io/managed-by: "Helm"
+  annotations:
+    meta.helm.sh/release-name: "support"
+    meta.helm.sh/release-namespace: "default"
 spec:
   selector:
     matchLabels:
