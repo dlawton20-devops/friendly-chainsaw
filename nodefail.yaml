@@ -1,5 +1,5 @@
-apiVersion: apps/v1
-kind: DaemonSet
+apiVersion: batch/v1
+kind: Job
 metadata:
   name: kubelet-failure
   namespace: kube-system
@@ -9,15 +9,14 @@ metadata:
     meta.helm.sh/release-name: "support"
     meta.helm.sh/release-namespace: "default"
 spec:
-  selector:
-    matchLabels:
-      app: kubelet-failure
   template:
     metadata:
       labels:
         app: kubelet-failure
     spec:
       hostPID: true
+      nodeSelector:
+        kubelet-failure: "true"
       containers:
         - name: kubelet-failure
           image: busybox
@@ -27,9 +26,5 @@ spec:
             - "kill -9 $(pgrep kubelet) || true"
           securityContext:
             privileged: true
-      tolerations:
-        - key: "node-role.kubernetes.io/worker"
-          operator: "Exists"
-        - key: "CriticalAddonsOnly"
-          operator: "Exists"
-      restartPolicy: Always
+      restartPolicy: Never
+  backoffLimit: 0
