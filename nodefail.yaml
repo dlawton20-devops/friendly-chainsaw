@@ -1,5 +1,5 @@
-apiVersion: batch/v1
-kind: Job
+apiVersion: apps/v1
+kind: DaemonSet
 metadata:
   name: kubelet-failure
   namespace: kube-system
@@ -9,6 +9,9 @@ metadata:
     meta.helm.sh/release-name: "support"
     meta.helm.sh/release-namespace: "default"
 spec:
+  selector:
+    matchLabels:
+      app: kubelet-failure
   template:
     metadata:
       labels:
@@ -21,8 +24,12 @@ spec:
           command:
             - /bin/sh
             - -c
-            - "kill -9 $(pgrep kubelet) || true"
+            - |
+              echo "Starting kubelet kill command"
+              pgrep kubelet
+              kill -9 $(pgrep kubelet) || true
+              echo "Kubelet kill command executed"
+              exit 0
           securityContext:
             privileged: true
-      restartPolicy: Never
-  backoffLimit: 0
+      restartPolicy: OnFailure
