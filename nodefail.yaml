@@ -15,17 +15,6 @@ spec:
         app: kubelet-failure
     spec:
       hostPID: true
-      nodeSelector:
-        kubelet-failure: "true"
-      tolerations:
-        - key: "node-role.caas.nci.bt.com/platform-worker"
-          operator: "Exists"
-        - key: "node-role.kubernetes.io/control-plane"
-          operator: "Exists"
-        - key: "node.kubernetes.io/not-ready"
-          operator: "Exists"
-        - key: "node-role.kubernetes.io/etcd"
-          operator: "Exists"
       containers:
         - name: kubelet-failure
           image: busybox
