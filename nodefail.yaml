@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: kubelet-failure
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      app: kubelet-failure
+  template:
+    metadata:
+      labels:
+        app: kubelet-failure
+    spec:
+      hostPID: true
+      containers:
+        - name: kubelet-failure
+          image: busybox
+          command:
+            - /bin/sh
+            - -c
+            - "kill -9 $(pgrep kubelet) || true"
+          securityContext:
+            privileged: true
+      tolerations:
+        - key: "node-role.kubernetes.io/worker"
+          operator: "Exists"
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
+      restartPolicy: Never
